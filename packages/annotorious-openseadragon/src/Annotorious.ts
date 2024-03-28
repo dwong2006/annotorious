@@ -9,7 +9,7 @@ import {
 } from '@annotorious/core';
 import type { 
   Annotator, 
-  DrawingStyle, 
+  DrawingStyleExpression, 
   Filter, 
   PresenceProvider, 
   User 
@@ -199,7 +199,7 @@ export const createOSDAnnotator = <E extends unknown = ImageAnnotation>(
     drawingLayer.$set({ filter });
   }
 
-  const setStyle = (style: DrawingStyle | ((annotation: ImageAnnotation) => DrawingStyle) | undefined) => {
+  const setStyle = (style: DrawingStyleExpression<ImageAnnotation> | undefined) => {
     displayLayer.$set({ style });
     drawingLayer.$set({ style });
   }
@@ -214,6 +214,10 @@ export const createOSDAnnotator = <E extends unknown = ImageAnnotation>(
     currentUser = user;
     drawingLayer.$set({ user });
   }
+
+  const setVisible = (visible: boolean) =>
+    // @ts-ignore
+    displayLayer.$set({ visible });
 
   return {
     ...base,
@@ -233,6 +237,7 @@ export const createOSDAnnotator = <E extends unknown = ImageAnnotation>(
     setStyle,
     setTheme,
     setUser,
+    setVisible,
     state,
     viewer
   }

@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import type OpenSeadragon from 'openseadragon';
 import { ShapeType } from '@annotorious/annotorious';
-import type { DrawingStyle, Filter, Selection } from '@annotorious/core';
+import type { DrawingStyle, DrawingStyleExpression, Filter, Selection } from '@annotorious/core';
 import type { Ellipse, ImageAnnotation, Polygon, Rectangle, Shape } from '@annotorious/annotorious';
 
 const DEFAULT_FILL = 0x1a73e8;
@@ -258,7 +258,7 @@ export const createStage = (viewer: OpenSeadragon.Viewer, canvas: HTMLCanvasElem
     selectedIds = new Set(selected.map(t => t.id));
   }
 
-  const setStyle = (s: DrawingStyle | ((a: ImageAnnotation) => DrawingStyle) | undefined) => {
+  const setStyle = (s?: DrawingStyleExpression<ImageAnnotation>) => {
     if (typeof s === 'function') {
       annotationShapes.forEach(({ annotation, fill, stroke, strokeWidth }, _) => {
         if (strokeWidth > 1)
@@ -295,6 +295,13 @@ export const createStage = (viewer: OpenSeadragon.Viewer, canvas: HTMLCanvasElem
 
     renderer.render(graphics);
   }
+
+  const setVisible = (visible: boolean) => {
+    if (visible)
+      canvas.classList.remove('hidden');
+    else 
+      canvas.classList.add('hidden');
+  }
   
   const destroy = () => renderer.destroy();
 
@@ -307,6 +314,7 @@ export const createStage = (viewer: OpenSeadragon.Viewer, canvas: HTMLCanvasElem
     setFilter,
     setSelected,
     setStyle,
+    setVisible,
     updateAnnotation
   }
   
