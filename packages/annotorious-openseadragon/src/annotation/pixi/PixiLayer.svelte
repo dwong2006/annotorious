@@ -121,7 +121,8 @@
 
       const { x, y, width, height } = currentViewportBounds;
 
-      const intersecting = store.getIntersecting(x, y, width, height);
+      let intersecting = store.getIntersecting(x, y, width, height);
+      intersecting = intersecting.filter((element) => element !== undefined);
       viewport.set(intersecting.map(a => a.id));
     }
 
@@ -156,7 +157,9 @@
     if (currentViewportBounds) {
       const { x, y, width, height } = currentViewportBounds;
 
-      const intersecting = store.getIntersecting(x, y, width, height);
+      let intersecting = store.getIntersecting(x, y, width, height);
+      intersecting = intersecting.filter((element) => element !== undefined);
+
       viewport.set(intersecting.map(a => a.id));
     } else {
       viewport.set(store.all().map(a => a.id));

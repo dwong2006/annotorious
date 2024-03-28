@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { parseW3CUser, parseW3CBodies, serializeW3CBodies } from '@annotorious/core';
-import type { FormatAdapter, ParseResult, W3CAnnotation } from '@annotorious/core';
+import type { FormatAdapter, ParseResult, W3CAnnotation, W3CAnnotationBody } from '@annotorious/core';
 import { ShapeType } from '../core';
 import type { ImageAnnotation, RectangleGeometry } from '../core';
 import type {FragmentSelector } from './fragment';
@@ -35,11 +35,18 @@ export const parseW3CImageAnnotation = (
     creator,
     created,
     modified,
-    body, 
+    bodies, 
+    body,
     ...rest 
   } = annotation;
 
-  const bodies = parseW3CBodies(body, annotationId);
+  let theBody = bodies;
+  if( typeof bodies === 'undefined' )
+    theBody = body;
+
+  theBody = theBody.filter((element : W3CAnnotationBody) => element !== undefined);
+
+  const parsedBodies = parseW3CBodies(theBody, annotationId);
 
   const w3cTarget = Array.isArray(annotation.target) 
     ? annotation.target[0] : annotation.target;
@@ -57,7 +64,7 @@ export const parseW3CImageAnnotation = (
     parsed: {
       ...rest,
       id: annotationId,
-      bodies,
+      bodies: parsedBodies,
       target: {
         created: created ? new Date(created) : undefined,
         creator: parseW3CUser(creator),

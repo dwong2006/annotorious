@@ -27,8 +27,12 @@ const parseSVGXML = (value: string): Element => {
 }
 
 const parseSVGPolygon = (value: string): Polygon => {
-  const [a, b, str] = value.match(/(<polygon points=["|'])([^("|')]*)/) || [];
-  const points = str.split(' ').map((p) => p.split(',').map(parseFloat));
+  //const [a, b, str] = value.match(/(<polygon points=["|'])([^("|')]*)/) || [];
+  //const points = str.split(' ').map((p) => p.split(',').map(parseFloat));
+
+  const str = value.match(/(-?\d*\.?\d+),(-?\d*\.?\d+)/g) || [];
+
+  const points = str.map((p) => p.split(",").map(parseFloat));
 
   return {
     type: ShapeType.POLYGON,
