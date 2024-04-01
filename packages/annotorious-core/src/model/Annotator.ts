@@ -181,6 +181,18 @@ export const createBaseAnnotator = <I extends Annotation, E extends unknown>(
     }
   }
 
+  const updateAnnotationId = (oldId: string, newId: string) => {
+    const previousAnno = store.getAnnotation(oldId);
+    const prevTarget = previousAnno?.target;
+    const updatedTarget = { ...prevTarget, annotation: newId };
+    if( previousAnno ){
+      const updated = { ...previousAnno, id: newId, target: updatedTarget};
+      store.updateAnnotation(oldId, updated);
+      return updated;
+    }
+    return previousAnno;
+  }
+
   // Note that we don't spread the undoStack - it has a .destroy()
   // method that would likely get overwritten by other Annotator implementations
   // if people are not careful.
@@ -199,7 +211,8 @@ export const createBaseAnnotator = <I extends Annotation, E extends unknown>(
     setAnnotations,
     setSelected,
     undo: undoStack.undo,
-    updateAnnotation
+    updateAnnotation,
+    updateAnnotationId
   }
 
 }
